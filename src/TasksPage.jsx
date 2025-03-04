@@ -49,6 +49,14 @@ export function TasksPage() {
           handleClose();
         });
       };
+
+    const handleDestroy = (id) => {
+        console.log("handleDestroy", id);
+        axios.delete(`http://localhost:3000/tasks/${id}.json`).then(() => {
+          setTasks(tasks.filter((task) => task.id !== id));
+          handleClose();
+        });
+      };
       
      const handleClose = () => {
        console.log("handleClose");
@@ -63,7 +71,7 @@ useEffect(handleIndex, []);
       <TasksNew onCreate={handleCreate} />
       <TasksIndex tasks={tasks} onShow={handleShow} />
       <Modal show={isTasksShowVisible} onClose={handleClose}>
-        <TasksShow task={currentTask} onUpdate={handleUpdate} />
+        <TasksShow task={currentTask} onUpdate={handleUpdate} onDestroy={handleDestroy} />
       </Modal>
     </main>
   );

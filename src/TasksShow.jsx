@@ -1,4 +1,4 @@
-export function TasksShow({ task, onUpdate }) {
+export function TasksShow({ task, onUpdate, onDestroy }) {
         
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -32,6 +32,7 @@ export function TasksShow({ task, onUpdate }) {
         </div>
         <button type="submit">Update</button>
       </form>
+      <button onClick={() => onDestroy(task.id)}>Destroy</button>
     </div>
   );
 }
