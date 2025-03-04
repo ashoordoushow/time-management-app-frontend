@@ -32,6 +32,23 @@ export function TasksPage() {
        setIsTasksShowVisible(true);
        setCurrentTask(task);
      };
+
+    const handleUpdate = (id, params, successCallback) => {
+        console.log("handleUpdate", params);
+        axios.patch(`http://localhost:3000/tasks/${id}.json`, params).then((response) => {
+          setTasks(
+            tasks.map((task) => {
+              if (task.id === response.data.id) {
+                return response.data;
+              } else {
+                return task;
+              }
+            })
+          );
+          successCallback();
+          handleClose();
+        });
+      };
       
      const handleClose = () => {
        console.log("handleClose");
@@ -46,7 +63,7 @@ useEffect(handleIndex, []);
       <TasksNew onCreate={handleCreate} />
       <TasksIndex tasks={tasks} onShow={handleShow} />
       <Modal show={isTasksShowVisible} onClose={handleClose}>
-      <TasksShow task={currentTask} />
+        <TasksShow task={currentTask} onUpdate={handleUpdate} />
       </Modal>
     </main>
   );
