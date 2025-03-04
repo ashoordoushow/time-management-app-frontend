@@ -1,4 +1,5 @@
-export function TasksIndex({ tasks }) {
+export function TasksIndex({ tasks, onShow }) {
+
   return (
     <div>
       <h1>All tasks</h1>
@@ -9,6 +10,7 @@ export function TasksIndex({ tasks }) {
           <p>Start_Time: {task.start_time}</p>
           <p>End_Time: {task.end_time}</p>
           <p>Description: {task.description}</p>
+          <button onClick={() => onShow(task)}>More info</button>
         </div>
       ))}
     </div>
