@@ -1,77 +1,67 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { TasksIndex } from "./TasksIndex";
-import { Modal } from "./Modal";
-import { TasksShow } from "./TasksShow";
 
 export function TasksPage() {
   const [tasks, setTasks] = useState([]);
-  const [isTasksShowVisible, setIsTasksShowVisible] = useState(false);
-  const [currentTask, setCurrentTask] = useState({});
 
+  // Fetch tasks from the backend
   const handleIndex = () => {
-    console.log("handleIndex");
     axios.get("http://localhost:3000/tasks.json").then((response) => {
-      console.log(response.data);
       setTasks(response.data);
     });
   };
 
-  const handleCreate = (params, successCallback) => {
-    console.log("handleCreate", params);
-    axios.post("http://localhost:3000/tasks.json", params).then((response) => {
-      setTasks([...tasks, response.data]);
-      successCallback();
-    });
-  };
-
-  const handleTaskSwitch = (selectedTask) => {
-    if (selectedTask.required_time > 0) {
-      alert(`You must complete at least ${selectedTask.required_time} minutes before switching tasks!`);
-      return;
+  // Handle task creation & updates
+  const handleUpdateTask = (updatedTask) => {
+    if (!updatedTask.id) {
+      // Create a new task
+      axios
+        .post("http://localhost:3000/tasks.json", updatedTask)
+        .then((response) => {
+          setTasks((prevTasks) => [...prevTasks, response.data]); 
+        })
+        .catch((error) => {
+          console.error("Error creating task:", error);
+        });
+    } else {
+      // Update an existing task
+      axios
+        .patch(`http://localhost:3000/tasks/${updatedTask.id}.json`, updatedTask)
+        .then((response) => {
+          setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+              task.id === response.data.id ? response.data : task
+            )
+          );
+        })
+        .catch((error) => {
+          console.error("Error updating task:", error);
+        });
     }
-    handleShow(selectedTask);
   };
 
-  const handleShow = (task) => {
-    console.log("handleShow", task);
-    setIsTasksShowVisible(true);
-    setCurrentTask(task);
-  };
-
-  const handleUpdate = (id, params, successCallback) => {
-    console.log("handleUpdate", params);
-    axios.patch(`http://localhost:3000/tasks/${id}.json`, params).then((response) => {
-      setTasks(
-        tasks.map((task) => (task.id === response.data.id ? response.data : task))
-      );
-      successCallback();
-      handleClose();
-    });
-  };
-
-  const handleDestroy = (id) => {
-    console.log("handleDestroy", id);
-    axios.delete(`http://localhost:3000/tasks/${id}.json`).then(() => {
-      setTasks(tasks.filter((task) => task.id !== id));
-      handleClose();
-    });
-  };
-
-  const handleClose = () => {
-    console.log("handleClose");
-    setIsTasksShowVisible(false);
+  // ✅ Handle task deletion (Resets the pie chart section to "Unassigned")
+  const handleDeleteTask = (taskId) => {
+    axios
+      .delete(`http://localhost:3000/tasks/${taskId}.json`)
+      .then(() => {
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+      });
   };
 
   useEffect(handleIndex, []);
 
   return (
     <main>
-      {/* REMOVED: <TasksNew onCreate={handleCreate} /> */}
-      <TasksIndex tasks={tasks} onShow={handleTaskSwitch} />
-      <Modal show={isTasksShowVisible} onClose={handleClose}>
-        <TasksShow task={currentTask} onUpdate={handleUpdate} onDestroy={handleDestroy} />
-      </Modal>
+      <TasksIndex 
+        tasks={tasks} 
+        onUpdateTask={handleUpdateTask} 
+        onDeleteTask={handleDeleteTask} 
+      />
     </main>
   );
 }

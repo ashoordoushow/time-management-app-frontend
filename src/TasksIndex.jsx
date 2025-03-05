@@ -1,11 +1,15 @@
-import TasksPieChart from "./TasksPieChart"; // Import the pie chart component
+import TasksPieChart from "./TasksPieChart";
 
-export function TasksIndex({ tasks }) {
+export function TasksIndex({ tasks, onUpdateTask, onDeleteTask }) {
   return (
     <div>
-      {/* Pie Chart for Task Priority Breakdown */}
       <h2>Task Priority Breakdown</h2>
-      <TasksPieChart tasks={tasks} />
+      {/* ✅ Now correctly passing onDeleteTask */}
+      <TasksPieChart 
+        tasks={tasks} 
+        onUpdateTask={onUpdateTask} 
+        onDeleteTask={onDeleteTask} 
+      />
     </div>
   );
 }
