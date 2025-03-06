@@ -36,32 +36,30 @@ const TasksPieChart = ({ tasks, onUpdateTask, onDeleteTask }) => {
     };
   });
 
-  // ✅ Fix: Make Pie Chart Clickable Again!
   const handleSectionClick = (data, index) => {
     if (data && index !== undefined) {
       const selectedData = priorityData[index];
       const taskToEdit = tasks.find(task => task.priority === selectedData.priority);
-  
+
       setSelectedTask(
         taskToEdit || {
-          id: null, 
+          id: null,
           title: "",
           priority: selectedData.priority,
           required_time: 30,
-          reminder: false, 
+          reminder: false,
         }
       );
       setIsEditing(true);
     }
   };
 
-  // ✅ Handle Save/Update Task
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
 
     const updatedTask = {
-      id: selectedTask.id || null, 
+      id: selectedTask.id || null,
       title: formData.get("title"),
       priority: parseInt(formData.get("priority")),
       required_time: parseInt(formData.get("required_time")),
@@ -72,7 +70,6 @@ const TasksPieChart = ({ tasks, onUpdateTask, onDeleteTask }) => {
     setIsEditing(false);
   };
 
-  // ✅ Handle Delete Task
   const handleDelete = () => {
     if (selectedTask?.id) {
       onDeleteTask(selectedTask.id);
@@ -126,39 +123,60 @@ const TasksPieChart = ({ tasks, onUpdateTask, onDeleteTask }) => {
         ))}
       </div>
 
-      {/* ✅ Task Edit Modal */}
+      {/* ✅ Task Edit Modal (Fixed Visibility Issues) */}
       {isEditing && selectedTask && (
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", padding: "20px", border: "1px solid black", background: "#fff" }}>
-          <h3>{selectedTask.id ? "Edit Task" : "Create Task"}</h3>
-          <form onSubmit={handleFormSubmit}>
+        <div style={styles.modal}>
+          <h3 style={styles.title}>{selectedTask.id ? "Edit Task" : "Create Task"}</h3>
+          <form onSubmit={handleFormSubmit} style={styles.form}>
             <div>
-              <label>Task Name: </label>
-              <input type="text" name="title" defaultValue={selectedTask.title} required />
+              <label style={styles.label}>Task Name:</label>
+              <input type="text" name="title" defaultValue={selectedTask.title} required style={styles.input} />
             </div>
             <div>
-              <label>Priority: </label>
-              <select name="priority" defaultValue={selectedTask.priority}>
+              <label style={styles.label}>Priority:</label>
+              <select name="priority" defaultValue={selectedTask.priority} style={styles.input}>
                 {priorityColors.map((item, index) => (
                   <option key={index} value={index + 1}>{item.meaning}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label>Required Time (Minutes): </label>
-              <input type="number" name="required_time" defaultValue={selectedTask.required_time} min="1" required />
+              <label style={styles.label}>Required Time (Minutes):</label>
+              <input type="number" name="required_time" defaultValue={selectedTask.required_time} min="1" required style={styles.input} />
             </div>
             <div>
-              <label>Reminder: </label>
+              <label style={styles.label}>Reminder:</label>
               <input type="checkbox" name="reminder" defaultChecked={selectedTask.reminder} />
             </div>
-            <button type="submit">{selectedTask.id ? "Update" : "Save"}</button>
-            {selectedTask.id && <button type="button" onClick={handleDelete}>Delete</button>}
-            <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+            <button type="submit" style={styles.button}>Save</button>
+            {selectedTask.id && <button type="button" onClick={handleDelete} style={styles.deleteButton}>Delete</button>}
+            <button type="button" onClick={() => setIsEditing(false)} style={styles.cancelButton}>Cancel</button>
           </form>
         </div>
       )}
     </div>
   );
+};
+
+const styles = {
+  modal: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    padding: "20px",
+    background: "rgba(255, 255, 255, 0.95)",
+    borderRadius: "8px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+    color: "#000",
+  },
+  title: { fontSize: "18px", fontWeight: "bold", textAlign: "center", color: "#333" },
+  form: { display: "flex", flexDirection: "column", gap: "10px" },
+  label: { fontWeight: "bold", color: "#222" },
+  input: { padding: "8px", fontSize: "16px", border: "1px solid #ccc", borderRadius: "4px", background: "#fff", color: "#000" },
+  button: { backgroundColor: "#007bff", color: "#fff", padding: "8px", borderRadius: "4px", cursor: "pointer" },
+  deleteButton: { backgroundColor: "#dc3545", color: "#fff", padding: "8px", borderRadius: "4px", cursor: "pointer" },
+  cancelButton: { backgroundColor: "#6c757d", color: "#fff", padding: "8px", borderRadius: "4px", cursor: "pointer" },
 };
 
 export default TasksPieChart;

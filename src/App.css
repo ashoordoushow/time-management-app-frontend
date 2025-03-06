@@ -1,42 +1,94 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Ensure the background video covers the full screen */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Main content container */
+.content {
+  position: relative;
+  z-index: 1;
   text-align: center;
+  color: white; /* Ensures text is visible */
+  padding: 50px 0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Header styles */
+.header {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 15px;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.header nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.card {
-  padding: 2em;
+/* Footer styles */
+.footer {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 15px;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  color: white;
+  font-size: 14px;
 }
 
-.read-the-docs {
-  color: #888;
+/* Layout adjustments */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  flex-direction: column;
+}
+
+/* Styling for pie chart and labels */
+.task-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+}
+
+.tasks-list, .priority-list {
+  text-align: left;
+}
+
+.tasks-list h2, .priority-list h2 {
+  color: white;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+/* Task labels */
+.task-label {
+  color: white;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+/* Ensuring text is not cut off */
+h1 {
+  margin-top: 70px; /* Prevents text from being cut off at the top */
+  font-size: 26px;
+  font-weight: bold;
 }
