@@ -1,0 +1,29 @@
+[variables]
+NPM_CONFIG_UPDATE_NOTIFIER = 'false'
+NPM_CONFIG_FUND = 'false'
+NODE_ENV = 'production'
+
+[phases.setup]
+nixPkgs = ['nodejs_20', 'python3']  # Explicitly use Node.js 20
+
+[phases.install]
+cmds = [
+    'npm install -g npm@latest',  # Update npm first
+    'npm ci'                      # Clean install of dependencies
+]
+
+[phases.build]
+cmds = ['npm run build']
+dependsOn = ['install']
+
+[phases.caddy]
+dependsOn = ['build']
+nixpkgsArchive = 'ba913eda2df8eb72147259189d55932012df6301'
+nixPkgs = ['caddy']
+
+[phases.fmt]
+dependsOn = ['caddy']
+cmds = ['caddy fmt --overwrite Caddyfile']
+
+[start]
+cmd = 'exec caddy run --config Caddyfile --adapter caddyfile 2>&1'
