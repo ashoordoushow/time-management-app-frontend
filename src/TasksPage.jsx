@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import apiClient from "./config/axios"; // Importing API client
 import { TasksIndex } from "./TasksIndex";
 
 export function TasksPage() {
@@ -7,8 +7,10 @@ export function TasksPage() {
 
   // Fetch tasks from the backend
   const handleIndex = () => {
-    axios.get("http://localhost:3000/tasks.json").then((response) => {
+    apiClient.get("/tasks.json").then((response) => {
       setTasks(response.data);
+    }).catch((error) => {
+      console.error("Error fetching tasks:", error);
     });
   };
 
@@ -16,8 +18,8 @@ export function TasksPage() {
   const handleUpdateTask = (updatedTask) => {
     if (!updatedTask.id) {
       // Create a new task
-      axios
-        .post("http://localhost:3000/tasks.json", updatedTask)
+      apiClient
+        .post("/tasks.json", updatedTask)
         .then((response) => {
           setTasks((prevTasks) => [...prevTasks, response.data]); 
         })
@@ -26,8 +28,8 @@ export function TasksPage() {
         });
     } else {
       // Update an existing task
-      axios
-        .patch(`http://localhost:3000/tasks/${updatedTask.id}.json`, updatedTask)
+      apiClient
+        .patch(`/tasks/${updatedTask.id}.json`, updatedTask)
         .then((response) => {
           setTasks((prevTasks) =>
             prevTasks.map((task) =>
@@ -43,8 +45,8 @@ export function TasksPage() {
 
   // ✅ Handle task deletion (Resets the pie chart section to "Unassigned")
   const handleDeleteTask = (taskId) => {
-    axios
-      .delete(`http://localhost:3000/tasks/${taskId}.json`)
+    apiClient
+      .delete(`/tasks/${taskId}.json`)
       .then(() => {
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
       })
